@@ -273,7 +273,6 @@ function get-SetsParameters {
 }#Parses the comlete search path an make a detailed set inventory
 
 
-
 #region backup Ableton Lib (works)
 
 
