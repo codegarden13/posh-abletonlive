@@ -1,12 +1,18 @@
-#region Ableton - Processing as xml
-#region ableton functions
+# collection of ableton related functions 
 
-function backup-Library ($source, $target){
-# https://blog-it-solutions.de/mac-os-backup-mit-rsync/
 
-#& rsync  -arg --no-perms --delete --group  $source $target
-#& rsync -cazEL --delete --progress --verbose "/Volumes/Macintosh HD 2/TS-259 Pro+/Test/" admin@192.168.1.20:/share/Public
-& rsync  -arg --delete --group --verbose --log-file="/users/salomon/Documents/1. Projekte/CODING/test.log"  $source $target
+function backup-Library ($source, $target, $logfile) {
+    <#
+        .SYNOPSIS
+            Backup my usb library to NAS, which creates additional offline backups.
+
+        .EXAMPLE
+            backup-Library "/Volumes/03-USB-DATA/Ableton/" "nas/Home/Musikprojekt/Backup 03-USB-Data/Ableton/" "/users/thisisme/Documents/test.log"
+
+    #>
+ 
+
+    & rsync  -arg --delete --group --verbose --log-file=$logfile $source $target
 
 } # diff backup
 function get-abletonsets ($folder) {
@@ -107,11 +113,11 @@ function enter-abletonsetxml($xml) {
     #>
     
 
-    $orgAbletonV =    ($xml.SelectNodes('//Ableton') | select-object creator).creator
+    $orgAbletonV = ($xml.SelectNodes('//Ableton') | select-object creator).creator
     $scaleNameValue = ($xml.LiveSet.ScaleInformation.Name).Value
     $scaleRootValue = ($xml.LiveSet.ScaleInformation.RootNote).Value
     $AutomationMode = ($xml.LiveSet.AutomationMode).Value
-    $tempo =          ($xml.Liveset.MasterTrack.DeviceChain.Mixer.Tempo.Manual).value
+    $tempo = ($xml.Liveset.MasterTrack.DeviceChain.Mixer.Tempo.Manual).value
 
 
 
@@ -249,7 +255,7 @@ function get-SetsParameters {
     
     } #parse each set and get the deeper data from a function
 
-    $presentation = $alldata | select-object Setname, Tempo,Project , Created, LastWrite,Firstversion,ScaleNameVal, ScaleRootVal, "Quantization Global", "Quantization Auto", AutomationMode,Miditracks, Audiotracks, Scenes , setpath
+    $presentation = $alldata | select-object Setname, Tempo, Project , Created, LastWrite, Firstversion, ScaleNameVal, ScaleRootVal, "Quantization Global", "Quantization Auto", AutomationMode, Miditracks, Audiotracks, Scenes , setpath
     #lastaccess ist immer der zugriff durch das lesen der eigenschaften
     
     #$presentation| format-table -autosize
@@ -266,25 +272,17 @@ function get-SetsParameters {
     invoke-item $export    
 }#Parses the comlete search path an make a detailed set inventory
 
-#endregion Ableton functions
+
 
 #region backup Ableton Lib (works)
 
-$source="/Volumes/03-USB-DATA/Ableton/"
-$target="nas/Home/TH Musikprojekt/Backup 03-USB-Data/Ableton/"
-# backup-Library $source $target
+
 #endregion backup Ableton lib
-
-
-
-#/Users/salomon/nas/Home/TH Musikprojekt/Backup 03-USB-Data
 
 #region parse all sets 
 # get-setsparameters "/Volumes/03-USB-DATA/Ableton/Projects 10.1/*/_*" #works !
 # get-setsparameters "/Volumes/03-USB-DATA/Ableton/Projects 10.1/*/*.als" #works !
 #endregion parse all sets
-
-
 
 
 #region Test one xml - inactive
@@ -294,5 +292,3 @@ $setdata1 = ([xml](get-content -path $testxml)).Ableton
 enter-abletonsetxml $setdata1 
 #>
 #endregion Test one xml
-
-#endregion Ableton
