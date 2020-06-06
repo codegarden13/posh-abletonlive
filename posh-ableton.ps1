@@ -1,10 +1,3 @@
-clear-host
-
-function update-logfile ($OptionalParameters) {
-    #must be a self-aware function that knowes where the file is. so somthing like create-logfile should be INSIDE that function.
-    
-}#tbd
-
 #region Ableton - Processing as xml
 #region ableton functions
 
